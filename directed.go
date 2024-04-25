@@ -116,6 +116,10 @@ func (d *directed[K, T]) AddEdge(sourceHash, targetHash K, options ...func(*Edge
 	return d.addEdge(sourceHash, targetHash, edge)
 }
 
+func (d *directed[K, T]) AddEdgeT(source, target T, options ...func(*EdgeProperties)) error {
+	return d.AddEdge(d.hash(source), d.hash(target), options...)
+}
+
 func (d *directed[K, T]) AddEdgesFrom(g Graph[K, T]) error {
 	edges, err := g.Edges()
 	if err != nil {

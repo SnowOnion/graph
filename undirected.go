@@ -100,6 +100,10 @@ func (u *undirected[K, T]) AddEdge(sourceHash, targetHash K, options ...func(*Ed
 	return nil
 }
 
+func (u *undirected[K, T]) AddEdgeT(source, target T, options ...func(*EdgeProperties)) error {
+	return u.AddEdge(u.hash(source), u.hash(target), options...)
+}
+
 func (u *undirected[K, T]) AddEdgesFrom(g Graph[K, T]) error {
 	edges, err := g.Edges()
 	if err != nil {

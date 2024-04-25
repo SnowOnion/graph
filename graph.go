@@ -113,6 +113,11 @@ type Graph[K comparable, T any] interface {
 	//
 	AddEdge(sourceHash, targetHash K, options ...func(*EdgeProperties)) error
 
+	// AddEdgeT creates an edge between the source and the target vertex.
+	//
+	// It behaves like AddEdge, but needs no explicit hashing.
+	AddEdgeT(source, target T, options ...func(*EdgeProperties)) error
+
 	// AddEdgesFrom adds all edges along with their properties from the given
 	// graph to the receiving graph.
 	//

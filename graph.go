@@ -92,6 +92,9 @@ type Graph[K comparable, T any] interface {
 	// its properties or ErrVertexNotFound if it doesn't exist.
 	VertexWithProperties(hash K) (T, VertexProperties, error)
 
+	// Vertices returns all vertices.
+	Vertices() ([]K, error)
+
 	// RemoveVertex removes the vertex with the given hash value from the graph.
 	//
 	// The vertex is not allowed to have edges and thus must be disconnected.

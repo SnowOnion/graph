@@ -2,6 +2,7 @@ package graph
 
 import (
 	"errors"
+	"maps"
 	"testing"
 )
 
@@ -248,6 +249,80 @@ func TestDirected_Vertex(t *testing.T) {
 		if vertex != test.vertex {
 			t.Errorf("%s: vertex expectancy doesn't match: expected %v, got %v", name, test.vertex, vertex)
 		}
+	}
+}
+
+func TestDirected_Vertices(t *testing.T) {
+	type set[T comparable] map[T]struct{}
+	e := struct{}{}
+	tests := map[string]struct {
+		vertices         []int
+		edges            []Edge[int]
+		expectedVertices set[int]
+	}{
+		"graph with 3 vertices": {
+			vertices: []int{1, 2, 3},
+			edges: []Edge[int]{
+				{
+					Source: 1,
+					Target: 2,
+					Properties: EdgeProperties{
+						Weight: 10,
+						Attributes: map[string]string{
+							"color": "red",
+						},
+					},
+				},
+				{
+					Source: 2,
+					Target: 3,
+					Properties: EdgeProperties{
+						Weight: 20,
+						Attributes: map[string]string{
+							"color": "green",
+						},
+					},
+				},
+				{
+					Source: 3,
+					Target: 1,
+					Properties: EdgeProperties{
+						Weight: 30,
+						Attributes: map[string]string{
+							"color": "blue",
+						},
+					},
+				},
+			},
+			expectedVertices: set[int]{1: e, 2: e, 3: e},
+		},
+	}
+
+	for name, test := range tests {
+		t.Run(name, func(t *testing.T) {
+			g := New(IntHash, Directed())
+
+			for _, vertex := range test.vertices {
+				_ = g.AddVertex(vertex)
+			}
+
+			for _, edge := range test.edges {
+				_ = g.AddEdge(copyEdge(edge))
+			}
+
+			vertices, err := g.Vertices()
+			if err != nil {
+				t.Fatalf("unexpected error: %v", err.Error())
+			}
+
+			verticesSet := set[int]{}
+			for _, vertex := range vertices {
+				verticesSet[vertex] = e
+			}
+			if !maps.Equal(test.expectedVertices, verticesSet) {
+				t.Errorf("%s: expected vertices %v, got %v", name, test.expectedVertices, verticesSet)
+			}
+		})
 	}
 }
 
